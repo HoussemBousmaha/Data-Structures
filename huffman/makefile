@@ -1,7 +1,2 @@
-
-
-run: main
-	../exe/main
-
-main: main.cpp
-	g++-12 -Wall main.cpp -o ../exe/main
+main: main.cc
+	clang++ -std=c++17 main.cc -o main
