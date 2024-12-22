@@ -31,10 +31,12 @@ void heapify(heap *heap, int i) {
     int r = 2 * i + 2; // right = 2*i + 2
 
     // If left child is larger than root
-    if (l < N && heap->elements[l]->frequency < heap->elements[smallest]->frequency) smallest = l;
+    if (l < N && heap->elements[l]->frequency < heap->elements[smallest]->frequency)
+        smallest = l;
 
     // If right child is larger than smallest so far
-    if (r < N && heap->elements[r]->frequency < heap->elements[smallest]->frequency) smallest = r;
+    if (r < N && heap->elements[r]->frequency < heap->elements[smallest]->frequency)
+        smallest = r;
 
     // If smallest is not root
     if (smallest != i) {
@@ -152,14 +154,15 @@ void draw_tree(node *R, FILE *f, int *nbNil) {
 
             info_fg = R->left->frequency;
             if (R->left->data == '\0') {
-                fprintf(f, "  \"{%d %c %d}\" -> \"{%d %c %d}\"[label=0, color=red] \n", info, R->data != '\0' ? R->data : ' ', R->pos, info_fg, ' ',
-                        R->left->pos);
+                fprintf(f, "  \"{%d %c %d}\" -> \"{%d %c %d}\"[label=0, color=red] \n", info,
+                        R->data != '\0' ? R->data : ' ', R->pos, info_fg, ' ', R->left->pos);
             } else {
-                fprintf(f, "  \"{%d %c %d}\" -> \"{%d - %c}\"[label=0, color=red] \n", info, R->data != '\0' ? R->data : ' ', R->pos, info_fg,
-                        R->left->data);
+                fprintf(f, "  \"{%d %c %d}\" -> \"{%d - %c}\"[label=0, color=red] \n", info,
+                        R->data != '\0' ? R->data : ' ', R->pos, info_fg, R->left->data);
             }
 
-            // Dessiner un fils NIL virtuel et invisible au milieu (pour une meilleure s�paration des fils gauches et droits)
+            // Dessiner un fils NIL virtuel et invisible au milieu (pour une meilleure s�paration des fils gauches et
+            // droits)
             fprintf(f, "  \"NIL%d\" [style=invis];\n", *nbNil);
             fprintf(f, "  \"{%d %c %d}\" -> \"NIL%d\" ", info, R->data != '\0' ? R->data : ' ', R->pos, (*nbNil)++);
             fprintf(f, " [style=invis];\n");
@@ -167,11 +170,11 @@ void draw_tree(node *R, FILE *f, int *nbNil) {
             info_fd = R->right->frequency;
 
             if (R->right->data == '\0') {
-                fprintf(f, "  \"{%d %c %d}\" -> \"{%d %c %d}\"[label=1, color=blue] \n", info, R->data != '\0' ? R->data : ' ', R->pos, info_fd, ' ',
-                        R->right->pos);
+                fprintf(f, "  \"{%d %c %d}\" -> \"{%d %c %d}\"[label=1, color=blue] \n", info,
+                        R->data != '\0' ? R->data : ' ', R->pos, info_fd, ' ', R->right->pos);
             } else {
-                fprintf(f, "  \"{%d %c %d}\" -> \"{%d - %c}\"[label=1, color=blue] \n", info, R->data != '\0' ? R->data : ' ', R->pos, info_fd,
-                        R->right->data);
+                fprintf(f, "  \"{%d %c %d}\" -> \"{%d - %c}\"[label=1, color=blue] \n", info,
+                        R->data != '\0' ? R->data : ' ', R->pos, info_fd, R->right->data);
             }
         }
 

@@ -7,7 +7,7 @@
 #define NB_NODES 20
 
 int main(void) {
-    Node* root = bst_insert(NULL, rand() % NODE_MAX);
+    Node *root = bst_insert(NULL, rand() % NODE_MAX);
     for (size_t i = 0; i < NB_NODES; i++) {
         bst_insert(root, rand() % NODE_MAX);
     }

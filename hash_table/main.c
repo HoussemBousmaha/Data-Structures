@@ -1,7 +1,7 @@
 #include <stdbool.h>
 
-#include "types.h"
 #include "hash_table.h"
+#include "types.h"
 
 int main() {
     hash_table *ht = init_hash_table(TABLE_SIZE);

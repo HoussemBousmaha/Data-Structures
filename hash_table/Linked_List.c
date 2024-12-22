@@ -1,8 +1,8 @@
-#include <stdlib.h>
 #include "string.h"
+#include <stdlib.h>
 
-#include "types.h"
 #include "Linked_List.h"
+#include "types.h"
 
 LinkedList *allocate_list() {
     // Allocates memory for a Linkedlist pointer

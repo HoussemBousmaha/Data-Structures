@@ -3,7 +3,7 @@
 
 #include "bst.h"
 
-Node* bst_create_node(int key) {
+Node *bst_create_node(int key) {
     Node *node = malloc(sizeof(Node));
     node->key = key;
     node->left = node->right = NULL;
@@ -11,8 +11,9 @@ Node* bst_create_node(int key) {
     return node;
 }
 
-Node* bst_insert(Node* node, int key) {
-    if (node == NULL) return bst_create_node(key);
+Node *bst_insert(Node *node, int key) {
+    if (node == NULL)
+        return bst_create_node(key);
 
     if (key < node->key) {
         node->left = bst_insert(node->left, key);
@@ -22,8 +23,9 @@ Node* bst_insert(Node* node, int key) {
     return node;
 }
 
-void bst_dump_dot(Node* node, FILE* stream) {
-    if (node == NULL) return;
+void bst_dump_dot(Node *node, FILE *stream) {
+    if (node == NULL)
+        return;
 
     fprintf(stream, "    %d [label=\"%d\"];\n", node->key, node->key);
     if (node->left != NULL) {
@@ -36,10 +38,9 @@ void bst_dump_dot(Node* node, FILE* stream) {
     }
 }
 
-void bst_export_file(Node* tree, FILE *stream) {
+void bst_export_file(Node *tree, FILE *stream) {
     fprintf(stream, "digraph BST {\n");
     fprintf(stream, "    node [fontname=\"Arial\"];\n");
     bst_dump_dot(tree, stream);
     fprintf(stream, "}\n");
 }
-

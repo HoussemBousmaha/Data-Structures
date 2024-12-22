@@ -4,9 +4,9 @@
 #include <string.h>
 #include <time.h>
 
-#include "types.h"
-#include "hash_table.h"
 #include "Linked_List.h"
+#include "hash_table.h"
+#include "types.h"
 
 unsigned int hash_function(char *key) {
     unsigned int index = 0;

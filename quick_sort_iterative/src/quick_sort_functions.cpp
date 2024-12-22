@@ -1,21 +1,18 @@
+#include "../lib/quick_sort_functions.hpp"
+#include <bits\stdc++.h>
 #include <iostream>
+#include <stack>
 #include <stdio.h>
 #include <vector>
-#include <stack>
-#include <bits\stdc++.h>
-#include "../lib/quick_sort_functions.hpp"
 
 using namespace std;
 
-pair<pair<int, int>, pair<int, int>> partition(vector<int> &array, int l, int r)
-{
+pair<pair<int, int>, pair<int, int>> partition(vector<int> &array, int l, int r) {
     bool j_turn = true;
     int i = l, j = r;
 
-    while (i < j)
-    {
-        while (array[i] < array[j])
-        {
+    while (i < j) {
+        while (array[i] < array[j]) {
             if (j_turn)
                 j--;
             else
@@ -33,17 +30,14 @@ pair<pair<int, int>, pair<int, int>> partition(vector<int> &array, int l, int r)
 
     pair<pair<int, int>, pair<int, int>> boundries;
 
-    if (j_turn)
-    {
+    if (j_turn) {
         // boundries of first part of array
         boundries.first.first = l;
         boundries.first.second = j - 1;
         // boundries of second part of the array
         boundries.second.first = j + 1;
         boundries.second.second = r;
-    }
-    else
-    {
+    } else {
         // boundries of first part of array
         boundries.first.first = l;
         boundries.first.second = i - 1;
@@ -55,11 +49,9 @@ pair<pair<int, int>, pair<int, int>> partition(vector<int> &array, int l, int r)
     return boundries;
 }
 
-
 // iterative verstion of quick_sort (hard)
 
-void qs(vector<int> &arr)
-{
+void qs(vector<int> &arr) {
     stack<pair<int, int>> stack;
 
     pair<int, int> initial;
@@ -72,8 +64,7 @@ void qs(vector<int> &arr)
 
     pair<pair<int, int>, pair<int, int>> boundries;
 
-    do
-    {
+    do {
         l = stack.top().first;
         r = stack.top().second;
         stack.pop();
@@ -85,14 +76,11 @@ void qs(vector<int> &arr)
             boundries = partition(arr, l, r);
 
             // step3
-            if (boundries.first.second - boundries.first.first > boundries.second.second - boundries.second.first)
-            {
+            if (boundries.first.second - boundries.first.first > boundries.second.second - boundries.second.first) {
                 stack.push(boundries.first);
                 l = boundries.second.first;
                 r = boundries.second.second;
-            }
-            else
-            {
+            } else {
                 stack.push(boundries.second);
                 l = boundries.first.first;
                 r = boundries.first.second;

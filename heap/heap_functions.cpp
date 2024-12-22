@@ -1,8 +1,8 @@
 #include <iostream>
 #include <vector>
 
-#include "heap_functions.hpp"
 #include "heap_draw.cpp"
+#include "heap_functions.hpp"
 
 using namespace std;
 

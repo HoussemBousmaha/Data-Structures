@@ -1,11 +1,9 @@
 
 #include "./quick_sort_functions.cpp"
 
-
 using namespace std;
 
-int main()
-{
+int main() {
     int n;
     cout << "Enter the size of the array: ";
     cin >> n;
@@ -21,8 +19,7 @@ int main()
 
     // sort(array.begin(), array.end());
 
-    cout << "\n\ntime taken by the program is : "
-         << float(clock() - begin_time) / CLOCKS_PER_SEC << " seconds\n\n";
+    cout << "\n\ntime taken by the program is : " << float(clock() - begin_time) / CLOCKS_PER_SEC << " seconds\n\n";
 
     for (int i = 0; i < array.size(); i++)
         cout << array[i] << "|";
