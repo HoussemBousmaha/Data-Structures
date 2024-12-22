@@ -1,23 +1,20 @@
+#include <ctype.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <string.h>
-#include <ctype.h>
 
 #define NUM_CHARS 256
 
-typedef struct trienode
-{
+typedef struct trienode {
     struct trienode *children[NUM_CHARS];
     bool terminal;
 } trienode;
 
-trienode *createnode()
-{
+trienode *createnode() {
     trienode *newnode = (trienode *)malloc(sizeof *newnode);
 
-    for (int i = 0; i < NUM_CHARS; i++)
-    {
+    for (int i = 0; i < NUM_CHARS; i++) {
         newnode->children[i] = NULL;
     }
     newnode->terminal = false;
@@ -25,8 +22,7 @@ trienode *createnode()
     return newnode;
 }
 
-bool trieinsert(trienode **root, char *signedtext)
-{
+bool trieinsert(trienode **root, char *signedtext) {
     if (*root == NULL)
         *root = createnode();
 
@@ -34,10 +30,8 @@ bool trieinsert(trienode **root, char *signedtext)
     trienode *tmp = *root;
     int lenght = strlen(signedtext);
 
-    for (int i = 0; i < lenght; i++)
-    {
-        if (tmp->children[text[i]] == NULL)
-        { // create a new node
+    for (int i = 0; i < lenght; i++) {
+        if (tmp->children[text[i]] == NULL) { // create a new node
             tmp->children[text[i]] = createnode();
         }
 
@@ -46,15 +40,13 @@ bool trieinsert(trienode **root, char *signedtext)
 
     if (tmp->terminal)
         return false;
-    else
-    {
+    else {
         tmp->terminal = true;
         return true;
     }
 }
 
-void printtrie_rec(trienode *node, unsigned char *prefix, int lenght, FILE *f, int *num_words)
-{
+void printtrie_rec(trienode *node, unsigned char *prefix, int lenght, FILE *f, int *num_words) {
     unsigned char *newprefix;
     newprefix = (unsigned char *)malloc(sizeof(lenght + 2));
 
@@ -64,20 +56,16 @@ void printtrie_rec(trienode *node, unsigned char *prefix, int lenght, FILE *f, i
     if (node->terminal)
         fprintf(f, "Word[%d] : %s\n", (*num_words)++, prefix);
 
-    for (int i = 0; i < NUM_CHARS; i++)
-    {
-        if (node->children[i] != NULL)
-        {
+    for (int i = 0; i < NUM_CHARS; i++) {
+        if (node->children[i] != NULL) {
             newprefix[lenght] = i;
             printtrie_rec(node->children[i], newprefix, lenght + 1, f, num_words);
         }
     }
 }
 
-void printtrie(trienode *root, FILE *f)
-{
-    if (root == NULL)
-    {
+void printtrie(trienode *root, FILE *f) {
+    if (root == NULL) {
         printf("Trie is Empty!\n");
         return;
     }
@@ -85,8 +73,7 @@ void printtrie(trienode *root, FILE *f)
     printtrie_rec(root, NULL, 0, f, &num_words);
 }
 
-int num_chars(const char *fname)
-{
+int num_chars(const char *fname) {
     FILE *f;
 
     f = fopen(fname, "r");
@@ -102,8 +89,7 @@ int num_chars(const char *fname)
     return number_of_chars;
 }
 
-char *texte_from_file(const char *fname)
-{
+char *texte_from_file(const char *fname) {
     FILE *f;
     f = fopen(fname, "r");
 
@@ -124,8 +110,8 @@ char *texte_from_file(const char *fname)
 
     return texte;
 }
-int main()
-{
+
+int main(void) {
     trienode *root = NULL;
 
     char *texte = texte_from_file("texte.txt");
@@ -133,12 +119,12 @@ int main()
     char *text;
     const char *separators = "1234567890±(),.-!%% \n";
     text = strtok(texte, separators);
-    while (text)
-    {
-        for (int i = 0; text[i] != '\0'; i++)
+    while (text) {
+        for (int i = 0; text[i] != '\0'; i++) {
             text[i] = tolower(text[i]);
+        }
+
         trieinsert(&root, text);
-        // printf("%s\n", text);
         text = strtok(NULL, separators);
     }
 
