@@ -10,3 +10,5 @@ void hash_table_insert_multiple_hash_table_items(hash_table *ht);
 char *hash_table_search(hash_table *ht, char *key);
 void hash_table_print_search(hash_table *table, char *key);
 void random_string(char* st);
+void hash_table_insert_multiple_items(hash_table *ht);
+bool print_hash_table(hash_table *ht);

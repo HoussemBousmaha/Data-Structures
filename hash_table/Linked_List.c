@@ -1,15 +1,17 @@
-#include "../lib/Linked_List.h"
+#include <stdlib.h>
+#include "string.h"
 
-LinkedList *allocate_list()
-{
+#include "types.h"
+#include "Linked_List.h"
+
+LinkedList *allocate_list() {
     // Allocates memory for a Linkedlist pointer
     LinkedList *list = (LinkedList *)malloc(sizeof(LinkedList));
     list->next = NULL;
     return list;
 }
 
-LinkedList *linkedlist_insert(LinkedList *list, hash_table_item *item)
-{
+LinkedList *linkedlist_insert(LinkedList *list, hash_table_item *item) {
     // Inserts the item onto the Linked List
     if (!list) // list == NULL
     {
@@ -20,8 +22,7 @@ LinkedList *linkedlist_insert(LinkedList *list, hash_table_item *item)
         return list;
     }
 
-    else if (!list->next)
-    {
+    else if (!list->next) {
         LinkedList *node = allocate_list();
         node->item = item;
         node->next = NULL;
@@ -41,8 +42,7 @@ LinkedList *linkedlist_insert(LinkedList *list, hash_table_item *item)
     return list;
 }
 
-hash_table_item *linkedlist_remove(LinkedList *list)
-{
+hash_table_item *linkedlist_remove(LinkedList *list) {
     // Removes the head from the linked list
     // and returns the item of the popped element
 
@@ -66,11 +66,9 @@ hash_table_item *linkedlist_remove(LinkedList *list)
     return it;
 }
 
-void free_linkedlist(LinkedList *list)
-{
+void free_linkedlist(LinkedList *list) {
     LinkedList *temp = list;
-    while (list)
-    {
+    while (list) {
         temp = list;
         list = list->next;
         free(temp->item->key);

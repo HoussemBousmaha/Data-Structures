@@ -1,4 +1,3 @@
-// function for linked lists here
 LinkedList **create_overflow_buckets(hash_table *table);
 void free_overflow_buckets(hash_table *table);
 LinkedList *allocate_list();

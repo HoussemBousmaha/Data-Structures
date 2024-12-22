@@ -1,8 +1,6 @@
 #include "../lib/Files_handling.h"
 
-
-int num_chars(const char *fname)
-{
+int num_chars(const char *fname) {
     FILE *f;
 
     f = fopen(fname, "r");
@@ -18,8 +16,7 @@ int num_chars(const char *fname)
     return number_of_chars;
 }
 
-char *texte_from_file(const char *fname)
-{
+char *texte_from_file(const char *fname) {
     FILE *f;
     f = fopen(fname, "r");
 

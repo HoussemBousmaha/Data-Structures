@@ -1,15 +1,14 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <time.h>
-#include "./handle_files.c"
-#include "./Linked_List.c"
-#include "../lib/hash_table.h"
 
-unsigned int hash_function(char *key)
-{
+#include "types.h"
+#include "hash_table.h"
+#include "Linked_List.h"
+
+unsigned int hash_function(char *key) {
     unsigned int index = 0;
     int p = 31;
     for (int i = 0; key[i]; i++)
@@ -19,8 +18,7 @@ unsigned int hash_function(char *key)
     return index;
 }
 
-hash_table_item *create_hash_table_item(char *key, char *value)
-{
+hash_table_item *create_hash_table_item(char *key, char *value) {
     // Creates a pointer to a new hash table hash_table_item
     hash_table_item *item = (hash_table_item *)malloc(sizeof(hash_table_item));
     item->key = (char *)malloc(strlen(key) + 1);
@@ -32,8 +30,7 @@ hash_table_item *create_hash_table_item(char *key, char *value)
     return item;
 }
 
-hash_table *init_hash_table(int size)
-{
+hash_table *init_hash_table(int size) {
     printf("\n\t--->>  This is a hash table\n\n\t--->>  keys : strings || values : strings\n\n");
     // Creates a new hash_table
     hash_table *table = (hash_table *)malloc(sizeof(hash_table));
@@ -48,35 +45,29 @@ hash_table *init_hash_table(int size)
     return table;
 }
 
-void handle_collision(hash_table *table, unsigned int index, hash_table_item *item)
-{
+void handle_collision(hash_table *table, unsigned int index, hash_table_item *item) {
     LinkedList *head = table->overflow_buckets[index];
 
-    if (head == NULL)
-    {
+    if (head == NULL) {
         // We need to create the list
         head = allocate_list();
         head->item = item;
         table->overflow_buckets[index] = head;
-    }
-    else
+    } else
         // Insert to the list
         table->overflow_buckets[index] = linkedlist_insert(head, item);
 }
 
-void free_hash_table_item(hash_table_item *item)
-{
+void free_hash_table_item(hash_table_item *item) {
     // Frees an hash_table_item
     free(item->key);
     free(item->value);
     free(item);
 }
 
-void free_table(hash_table *table)
-{
+void free_table(hash_table *table) {
     // Frees the table
-    for (int i = 0; i < table->size; i++)
-    {
+    for (int i = 0; i < table->size; i++) {
         hash_table_item *item = table->hash_table_items[i];
         if (item != NULL)
             free_hash_table_item(item);
@@ -88,35 +79,33 @@ void free_table(hash_table *table)
     free(table);
 }
 
-bool print_hash_table(hash_table *ht)
-{
-    FILE* f = fopen("..\\out\\out.txt", "w");
-    fprintf(f,"\n\tBEGIN\n\n");
-    for (int i = 0; i < ht->size; i++)
-    {
+bool print_hash_table(hash_table *ht) {
+    FILE *f = fopen("out.txt", "w");
+    fprintf(f, "\n\tBEGIN\n\n");
+    for (int i = 0; i < ht->size; i++) {
         if (ht->hash_table_items[i] == NULL)
-            fprintf(f,"\t--->  %-3d  ||  -----\n", i);
-        else
-        {
+            fprintf(f, "\t--->  %-3d  ||  -----\n", i);
+        else {
             if (ht->overflow_buckets[i] != NULL)
-                fprintf(f,"\t--->  %-3d  ||  {key : %s, value : %s}\n\n\t\t\tLinked List :", i, ht->hash_table_items[i]->key, ht->hash_table_items[i]->value);
+                fprintf(f, "\t--->  %-3d  ||  {key : %s, value : %s}\n\n\t\t\tLinked List :", i,
+                        ht->hash_table_items[i]->key, ht->hash_table_items[i]->value);
             else
-                fprintf(f,"\t--->  %-3d  ||  {key : %s, value : %s}", i, ht->hash_table_items[i]->key, ht->hash_table_items[i]->value);
-            while (ht->overflow_buckets[i] != NULL)
-            {
-                fprintf(f," -> {%-4s : %s}", ht->overflow_buckets[i]->item->key, ht->overflow_buckets[i]->item->value);
+                fprintf(f, "\t--->  %-3d  ||  {key : %s, value : %s}", i, ht->hash_table_items[i]->key,
+                        ht->hash_table_items[i]->value);
+            while (ht->overflow_buckets[i] != NULL) {
+                fprintf(f, " -> {%-4s : %s}", ht->overflow_buckets[i]->item->key, ht->overflow_buckets[i]->item->value);
                 ht->overflow_buckets[i] = ht->overflow_buckets[i]->next;
             }
-            fprintf(f,"\n\n");
+            fprintf(f, "\n\n");
         }
     }
-    fprintf(f,"\n\n\ttable_size     ----> %d", ht->size);
-    fprintf(f,"\n\ttable_elements ----> %d\n", ht->count);
-    fprintf(f,"\n\tEND\n\n");
+    fprintf(f, "\n\n\ttable_size     ----> %d", ht->size);
+    fprintf(f, "\n\ttable_elements ----> %d\n", ht->count);
+    fprintf(f, "\n\tEND\n\n");
+    return true;
 }
 
-void hash_table_insert(hash_table *table, char *key, char *value)
-{
+void hash_table_insert(hash_table *table, char *key, char *value) {
     // Create the hash_table_item
     hash_table_item *item = create_hash_table_item(key, value);
 
@@ -124,11 +113,9 @@ void hash_table_insert(hash_table *table, char *key, char *value)
     int index = hash_function(key);
 
     hash_table_item *current_hash_table_item = table->hash_table_items[index];
-    if (current_hash_table_item == NULL)
-    {
+    if (current_hash_table_item == NULL) {
         // Key does not exist.
-        if (table->count == table->size)
-        {
+        if (table->count == table->size) {
             // Hash Table Full
             printf("Insert Error: Hash Table is full\n");
             free_hash_table_item(item);
@@ -138,9 +125,7 @@ void hash_table_insert(hash_table *table, char *key, char *value)
         // Insert directly
         table->hash_table_items[index] = item;
         table->count++;
-    }
-    else
-    {
+    } else {
         // Scenario 1: We only need to update value
         if (strcmp(current_hash_table_item->key, key) == 0)
             strcpy(table->hash_table_items[index]->value, value);
@@ -151,15 +136,13 @@ void hash_table_insert(hash_table *table, char *key, char *value)
     }
 }
 
-void hash_table_insert_multiple_items(hash_table *ht)
-{
+void hash_table_insert_multiple_items(hash_table *ht) {
     int number_poeple;
     printf("\n\tInserting a group of items to the hash_table\n\n");
     printf("\n\t-->>  Enter number of items : ");
     scanf("%d", &number_poeple);
 
-    while (number_poeple--)
-    {
+    while (number_poeple--) {
         char key[MAX_NAME], value[MAX_NAME];
         random_string(key);
         random_string(value);
@@ -169,16 +152,14 @@ void hash_table_insert_multiple_items(hash_table *ht)
     }
 }
 
-void random_string(char *st)
-{
+void random_string(char *st) {
     int len = rand() % 10 + 1;
     st[len] = 0;
     while (len)
         st[--len] = 'a' + rand() % 26;
 }
 
-char *hash_table_search(hash_table *ht, char *key)
-{
+char *hash_table_search(hash_table *ht, char *key) {
     // Searches the key in the hashtable
     // and returns NULL if item doesn't exist
     int index = hash_function(key);
@@ -186,8 +167,7 @@ char *hash_table_search(hash_table *ht, char *key)
     LinkedList *head = ht->overflow_buckets[index];
 
     // Ensure that we move to a non NULL hash_table_item
-    while (item != NULL)
-    {
+    while (item != NULL) {
         if (strcmp(item->key, key) == 0)
             return item->value;
 
@@ -200,8 +180,7 @@ char *hash_table_search(hash_table *ht, char *key)
     return NULL;
 }
 
-void hash_table_print_search(hash_table *table, char *key)
-{
+void hash_table_print_search(hash_table *table, char *key) {
     char *val;
     if ((val = hash_table_search(table, key)) == NULL)
         printf("\n\t%s does not exist\n", key);
@@ -209,8 +188,7 @@ void hash_table_print_search(hash_table *table, char *key)
         printf("\n\tfound !\n\tkey : %s\t|    value : %s\n", key, val);
 }
 
-LinkedList **create_overflow_buckets(hash_table *table)
-{
+LinkedList **create_overflow_buckets(hash_table *table) {
     // Create the overflow buckets; an array of linkedlists
     LinkedList **buckets = (LinkedList **)calloc(table->size, sizeof(LinkedList *));
     for (int i = 0; i < table->size; i++)
@@ -218,8 +196,7 @@ LinkedList **create_overflow_buckets(hash_table *table)
     return buckets;
 }
 
-void free_overflow_buckets(hash_table *table)
-{
+void free_overflow_buckets(hash_table *table) {
     // Free all the overflow bucket lists
     LinkedList **buckets = table->overflow_buckets;
     for (int i = 0; i < table->size; i++)
