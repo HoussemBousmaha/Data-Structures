@@ -1,9 +1,12 @@
 #ifndef GRAPH_H_
 #define GRAPH_H_
 
+typedef struct mygraph {
+    int num_nodes;
+    int *vertices;
+    int **edges;
+} graph;
 
-
-typedef struct mygraph graph;
 
 graph *create_graph(int num_nodes);
 void destroy_graph(graph *g);
