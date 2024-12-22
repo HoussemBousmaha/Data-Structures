@@ -1,1 +1,1 @@
-C/C++ Famous Data Structures
+data structures and algorithms in c/c++
