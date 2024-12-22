@@ -39,9 +39,6 @@ int main(void) {
     fprintf(f, "}");
     fclose(f);
 
-    system("dot -Tjpg -o main.jpg main.dot");
-    system("open main.jpg");
-
     while (temp != NULL) {
         temp = head->next;
         free(head);
