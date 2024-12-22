@@ -1,18 +1,13 @@
 #include <iostream>
-#include <stdio.h>
-#include <stdio.h>
 #include <vector>
-#include <stack>
-#include <time.h>
-#include "../lib/heap_functions.hpp"
-#include "./heap_draw.cpp"
+
+#include "heap_functions.hpp"
+#include "heap_draw.cpp"
 
 using namespace std;
 
-void read_array(vector<int> &array, int n)
-{
-    for (int i = 0; i < n; i++)
-    {
+void read_array(vector<int> &array, int n) {
+    for (int i = 0; i < n; i++) {
         int data;
         data = rand() % 20;
         // cin >> data;
@@ -20,12 +15,9 @@ void read_array(vector<int> &array, int n)
     }
 }
 
-void output_heap(vector<int> heap)
-{
-    cout << endl
-         << '|';
-    for (int i = 0; i < heap.size(); i++)
-    {
+void output_heap(vector<int> heap) {
+    cout << endl << '|';
+    for (int i = 0; i < heap.size(); i++) {
         cout << heap[i] << '|';
     }
 }
@@ -33,7 +25,7 @@ void output_heap(vector<int> heap)
 void heapify(vector<int> &heap, int i, int heapsize) // also called sift_up
 {
     int N = heapsize;
-    int smallest = i;   // Initialize smallest as root
+    int smallest = i;  // Initialize smallest as root
     int l = 2 * i + 1; // left = 2*i + 1
     int r = 2 * i + 2; // right = 2*i + 2
 
@@ -46,8 +38,7 @@ void heapify(vector<int> &heap, int i, int heapsize) // also called sift_up
         smallest = r;
 
     // If smallest is not root
-    if (smallest != i)
-    {
+    if (smallest != i) {
         swap(heap[i], heap[smallest]);
 
         // Recursively heapify the affected sub-tree
@@ -55,23 +46,19 @@ void heapify(vector<int> &heap, int i, int heapsize) // also called sift_up
     }
 }
 
-void build_heap(vector<int> &heap)
-{
-    for (int i = heap.size() / 2 - 1; i >= 0; i--)
-    {
+void build_heap(vector<int> &heap) {
+    for (int i = heap.size() / 2 - 1; i >= 0; i--) {
         heapify(heap, i, heap.size());
     }
 }
 
-void insert_heap(vector<int> &heap, int data)
-{
+void insert_heap(vector<int> &heap, int data) {
     heap.push_back(data);
     int data_index = heap.size() - 1;
 
     int parent_index = (data_index - 1) / 2;
 
-    while (heap[data_index] > heap[parent_index])
-    {
+    while (heap[data_index] > heap[parent_index]) {
         int tmp = heap[data_index];
         heap[data_index] = heap[parent_index];
         heap[parent_index] = tmp;
@@ -81,8 +68,7 @@ void insert_heap(vector<int> &heap, int data)
     }
 }
 
-int delete_heap(vector<int> &heap)
-{
+int delete_heap(vector<int> &heap) {
     int ans = heap[0];
 
     heap[0] = heap[heap.size() - 1];
@@ -92,7 +78,6 @@ int delete_heap(vector<int> &heap)
 
     return ans;
 }
-
 
 void del_heap(vector<int> &heap, int data) {
     for (int i = 0; i < heap.size(); i++) {
@@ -105,15 +90,13 @@ void del_heap(vector<int> &heap, int data) {
     }
 }
 
-void heap_sort(vector<int> &array)
-{
+void heap_sort(vector<int> &array) {
 
     build_heap(array);
 
     int heapsize = array.size();
 
-    for (int i = 0; i < array.size(); i++)
-    {
+    for (int i = 0; i < array.size(); i++) {
         // replace the smallest element (root) with the last element in level_order
         int tmp = array[0];
         array[0] = array[heapsize - 1];

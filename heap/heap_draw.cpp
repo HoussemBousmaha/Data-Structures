@@ -1,9 +1,11 @@
-#include "../lib/heap_draw.hpp"
+#include <iostream>
+#include <vector>
 
 using namespace std;
 
-void Draw_Heap(vector<int> tree, int *sortie)
-{
+#include "heap_draw.hpp"
+
+void Draw_Heap(vector<int> tree, int *sortie) {
 
     int nbNil;
     char file_path[20];
@@ -11,14 +13,13 @@ void Draw_Heap(vector<int> tree, int *sortie)
 
     if (tree.size() == 0)
         cout << "> ERREUR : Arbre vide !";
-    else
-    {
-        sprintf(file_path, "../out/out%d.dot", *sortie);
+    else {
+        snprintf(file_path, sizeof(file_path), "out%d.dot", *sortie);
         f = fopen(file_path, "w");
         fprintf(f, "graph arbre {\n");
         fprintf(f, "\tordering = out;\n");
         fprintf(f, "\tsplines = false;\n");
-        
+
         nbNil = 0;
 
         dessinArbre(tree, 0, f, &nbNil, tree.size());
@@ -31,39 +32,32 @@ void Draw_Heap(vector<int> tree, int *sortie)
     }
 }
 
-void dessinArbre(vector<int> tree, int index, FILE *f, int *nbNil, int treesize)
-{
+void dessinArbre(vector<int> tree, int index, FILE *f, int *nbNil, int treesize) {
     int info, info_fg, info_fd;
-    if (index < treesize)
-    {
+    if (index < treesize) {
         info = tree[index];
         // Dessiner un arc vers le fils gauche
-        if (2 * index + 1 < treesize)
-        {
+        if (2 * index + 1 < treesize) {
 
             info_fg = tree[2 * index + 1];
             fprintf(f, "  \"{%d, %d}\" -- \"{%d, %d}\" \n", info, index, info_fg, 2 * index + 1);
-        }
-        else
-        {
+        } else {
             fprintf(f, "  \"NIL%d\" [style=invis];\n", *nbNil);
             fprintf(f, "  \"{%d, %d}\" -- \"NIL%d\" ", info, index, (*nbNil)++);
             fprintf(f, " [style=invis];\n");
         }
 
-        // Dessiner un fils NIL virtuel et invisible au milieu (pour une meilleure s�paration des fils gauches et droits)
+        // Dessiner un fils NIL virtuel et invisible au milieu (pour une meilleure s�paration des fils gauches et
+        // droits)
         fprintf(f, "  \"NIL%d\" [style=invis];\n", *nbNil);
         fprintf(f, "  \"{%d, %d}\" -- \"NIL%d\" ", info, index, (*nbNil)++);
         fprintf(f, " [style=invis];\n");
 
         // Dessiner un arc vers le fils droit
-        if (2 * index + 2 < treesize)
-        {
+        if (2 * index + 2 < treesize) {
             info_fd = tree[2 * index + 2];
             fprintf(f, "  \"{%d, %d}\" -- \"{%d, %d}\" \n", info, index, info_fd, 2 * index + 2);
-        }
-        else
-        {
+        } else {
             fprintf(f, "  \"NIL%d\" [style=invis];\n", *nbNil);
             fprintf(f, "  \"{%d, %d}\" -- \"NIL%d\" ", info, index, (*nbNil)++);
             fprintf(f, " [style=invis];\n");

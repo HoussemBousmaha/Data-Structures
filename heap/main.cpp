@@ -1,10 +1,8 @@
-#include "./heap_functions.cpp"
-
+#include "heap_functions.cpp"
 
 using namespace std;
 
-int main()
-{
+int main() {
     srand(time(nullptr));
     int n, sortie = 1;
 
@@ -29,8 +27,7 @@ int main()
 
     // output_heap(heap);
 
-    cout << "\n\n"
-         << float(clock() - begin_time) / CLOCKS_PER_SEC << endl;
+    cout << "\n\n" << float(clock() - begin_time) / CLOCKS_PER_SEC << endl;
 
     return 0;
 }
