@@ -1,10 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct Node {
+#define NODE_MAX 1000
+#define NB_NODES 20
+
+typedef struct Node Node;
+
+struct Node {
     int key;
-    struct Node *left, *right;
-} Node;
+    Node *left, *right;
+};
 
 Node *bst_create_node(int key) {
     Node *node = malloc(sizeof(Node));
@@ -47,9 +52,6 @@ void bst_export_file(Node *tree, FILE *stream) {
     bst_dump_dot(tree, stream);
     fprintf(stream, "}\n");
 }
-
-#define NODE_MAX 1000
-#define NB_NODES 20
 
 int main(void) {
     Node *root = bst_insert(NULL, rand() % NODE_MAX);
