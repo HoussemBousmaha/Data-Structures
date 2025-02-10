@@ -1,7 +1,7 @@
 CC_C = clang
 CC_CPP = clang++
-CFLAGS = -Wall -Wextra -Werror -std=c11
-CPPFLAGS = -Wall -Wextra -Werror -std=c++17
+CFLAGS = -Wall -Wextra -Werror -std=c99
+CPPFLAGS = -Wall -Wextra -Werror -std=c++11
 
 %: %.c
 	$(CC_C) $(CFLAGS) -o $@ $<
