@@ -1,17 +1,17 @@
-CC_C = clang
-CC_CPP = clang++
+CC = clang
+CXX = clang++
 CFLAGS = -Wall -Wextra -Werror -std=c99
-CPPFLAGS = -Wall -Wextra -Werror -std=c++11
+CXXFLAGS = -Wall -Wextra -Werror -std=c++11
 
 %: %.c
-	$(CC_C) $(CFLAGS) -o $@ $<
+	$(CC) $(CFLAGS) -o $@ $<
 
-%: %.cpp
-	$(CC_CPP) $(CPPFLAGS) -o $@ $<
+%: %.cc
+	$(CXX) $(CXXFLAGS) -o $@ $<
 
-all: $(patsubst %.c,%,$(wildcard *.c)) $(patsubst %.cpp,%,$(wildcard *.cpp))
+all: $(patsubst %.c,%,$(wildcard *.c)) $(patsubst %.cc,%,$(wildcard *.cc))
 
 clean:
-	rm -f $(patsubst %.c,%,$(wildcard *.c)) $(patsubst %.cpp,%,$(wildcard *.cpp))
+	rm -f $(patsubst %.c,%,$(wildcard *.c)) $(patsubst %.cc,%,$(wildcard *.cc))
 
 .PHONY: all clean
