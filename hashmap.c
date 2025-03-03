@@ -1,19 +1,20 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <time.h>
 
-#define MAX_SIZE 1024
-#define NUM_STRINGS 100
-#define STRING_LENGTH 32
+#define HASH_MAP_CAPACITY 1024
+#define STRINGS_COUNT 500
+#define STRING_LENGTH 5
 
 typedef struct {
-    char key[STRING_LENGTH];
-    int value;
-    int occupied; // 0 = empty, 1 = occupied
+    char K[STRING_LENGTH];
+    int V;
+    bool occupied;
 } HashEntry;
 
-static HashEntry map[MAX_SIZE] = {0};
+static HashEntry map[HASH_MAP_CAPACITY] = {0};
 static const char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 size_t hash(const char *input) {
@@ -24,55 +25,51 @@ size_t hash(const char *input) {
         hash = ((hash << 5) + hash) + c;
     }
 
-    return hash % MAX_SIZE;
+    return hash % HASH_MAP_CAPACITY;
 }
 
-void insert(const char *key, int value) {
-    size_t index = hash(key);
+void hash_insert(const char *K, int V) {
+    size_t index = hash(K);
+
+    int collisions = 0;
 
     while (map[index].occupied) {
-        index = (index + 1) % MAX_SIZE;
+        index = (index + 1) % HASH_MAP_CAPACITY;
+        collisions++;
     }
 
-    strcpy(map[index].key, key);
-    map[index].value = value;
-    map[index].occupied = 1;
+    strcpy(map[index].K, K);
+    map[index].V = V;
+    map[index].occupied = true;
 }
 
-int search(const char *key) {
-    size_t index = hash(key);
+int hash_search(const char *K) {
+    size_t index = hash(K);
 
     while (map[index].occupied) {
-        if (strcmp(map[index].key, key) == 0) {
-            return map[index].value;
+        if (strcmp(map[index].K, K) == 0) {
+            return map[index].V;
         }
-        index = (index + 1) % MAX_SIZE;
+        index = (index + 1) % HASH_MAP_CAPACITY;
     }
 
-    return -1; // Key not found
+    return -1;
 }
 
 int main(void) {
     srand(time(NULL));
 
-    for (int i = 0; i < NUM_STRINGS; i++) {
-        int value = rand() % 1000;
-
-        char key[STRING_LENGTH];
+    for (int i = 0; i < STRINGS_COUNT; i++) {
+        char K[STRING_LENGTH];
         for (size_t j = 0; j < STRING_LENGTH - 1; j++) {
-            key[j] = charset[rand() % (sizeof(charset) - 1)];
+            int c_idx = rand() % (sizeof(charset) - 1);
+            char c = charset[c_idx];
+            K[j] = c;
         }
-        key[STRING_LENGTH - 1] = '\0';
+        K[STRING_LENGTH - 1] = '\0';
 
-        insert(key, value);
-    }
-
-    // Print stored keys and values
-    printf("Stored key-value pairs:\n");
-    for (size_t i = 0; i < MAX_SIZE; i++) {
-        if (map[i].occupied) {
-            printf("Index %zu: Key = %s, Value = %d\n", i, map[i].key, map[i].value);
-        }
+        int V = rand() % 1000;
+        hash_insert(K, V);
     }
 
     return 0;
