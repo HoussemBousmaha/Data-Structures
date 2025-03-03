@@ -2,16 +2,18 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define N 1000000
+#define N 100000
+
+static int arr[N] = {0};
 
 typedef struct {
-    int first;
-    int second;
+    int a;
+    int b;
 } Pair;
 
 typedef struct {
-    Pair left;
-    Pair right;
+    Pair l;
+    Pair r;
 } PartitionBounds;
 
 PartitionBounds partition(int *array, int l, int r) {
@@ -37,62 +39,56 @@ PartitionBounds partition(int *array, int l, int r) {
     PartitionBounds boundaries;
 
     if (j_turn) {
-        boundaries.left.first = l;
-        boundaries.left.second = j - 1;
-        boundaries.right.first = j + 1;
-        boundaries.right.second = r;
+        boundaries.l.a = l;
+        boundaries.l.b = j - 1;
+        boundaries.r.a = j + 1;
+        boundaries.r.b = r;
     } else {
-        boundaries.left.first = l;
-        boundaries.left.second = i - 1;
-        boundaries.right.first = i + 1;
-        boundaries.right.second = r;
+        boundaries.l.a = l;
+        boundaries.l.b = i - 1;
+        boundaries.r.a = i + 1;
+        boundaries.r.b = r;
     }
 
     return boundaries;
 }
 
-void quicksort(int *arr, int n) {
-    Pair stack[n];
+void quicksort() {
+    Pair stack[N];
     int top = -1;
 
-    stack[++top] = (Pair){0, n - 1};
+    stack[++top] = (Pair){0, N - 1};
 
     while (top >= 0) {
-        int l = stack[top].first;
-        int r = stack[top].second;
+        int l = stack[top].a;
+        int r = stack[top].b;
         top--;
 
         while (r > l) {
             PartitionBounds boundaries = partition(arr, l, r);
 
-            if (boundaries.left.second - boundaries.left.first > boundaries.right.second - boundaries.right.first) {
-                stack[++top] = boundaries.left;
-                l = boundaries.right.first;
-                r = boundaries.right.second;
+            if (boundaries.l.b - boundaries.l.a > boundaries.r.b - boundaries.r.a) {
+                stack[++top] = boundaries.l;
+                l = boundaries.r.a;
+                r = boundaries.r.b;
             } else {
-                stack[++top] = boundaries.right;
-                l = boundaries.left.first;
-                r = boundaries.left.second;
+                stack[++top] = boundaries.r;
+                l = boundaries.l.a;
+                r = boundaries.l.b;
             }
         }
     }
 }
 
-int main() {
-    int *array = (int *)malloc(N * sizeof(int));
-    if (!array) {
-        fprintf(stderr, "Memory allocation failed\n");
-        return 1;
-    }
-
-    for (int i = 0; i < N; i++) {
-        array[i] = rand();
+int main(void) {
+    for (size_t i = 0; i < N; i++) {
+        arr[i] = rand();
     }
 
     clock_t begin_time = clock();
-    quicksort(array, N);
-    printf("Sorting took: %f seconds\n", (float)(clock() - begin_time) / CLOCKS_PER_SEC);
+    quicksort();
+    double elapsed = (double)(clock() - begin_time) / CLOCKS_PER_SEC;
+    printf("Sorting took: %f seconds\n", elapsed);
 
-    free(array);
     return 0;
 }
