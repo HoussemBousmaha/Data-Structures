@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define COUNT 5
+#define COUNT 20
 #define MAX 300
 
 struct node_t {
@@ -31,18 +31,16 @@ int main(void) {
         temp = node;
     }
 
-    FILE *f = fopen("main.dot", "wb");
-
-    fprintf(f, "digraph G {\n");
-    fprintf(f, "\tsize     =\t\"6.6\"   ;\n");
-    fprintf(f, "\trankdir  =\t\"LR\"    ;\n");
+    printf("digraph G {\n");
+    printf("\tsize     =\t\"6.6\"   ;\n");
+    printf("\trankdir  =\t\"LR\"    ;\n");
 
     for (struct node_t *temp = head; temp->next != NULL; temp = temp->next) {
-        fprintf(f, "\t%-7d\t->\t%-8d;\n", temp->data, temp->next->data);
+        printf("\t%-7d\t->\t%-8d;\n", temp->data, temp->next->data);
+        printf("\t%-7d\t->\t%-8d;\n", temp->next->data, temp->data);
     }
 
-    fprintf(f, "}");
-    fclose(f);
+    printf("}\n");
 
     while (temp != NULL) {
         temp = head->next;
