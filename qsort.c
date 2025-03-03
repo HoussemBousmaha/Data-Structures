@@ -16,12 +16,12 @@ typedef struct {
     Pair r;
 } PartitionBounds;
 
-PartitionBounds partition(int *array, int l, int r) {
+PartitionBounds partition(int l, int r) {
     int j_turn = 1;
     int i = l, j = r;
 
     while (i < j) {
-        while (array[i] < array[j]) {
+        while (arr[i] < arr[j]) {
             if (j_turn) {
                 j--;
             } else {
@@ -29,9 +29,9 @@ PartitionBounds partition(int *array, int l, int r) {
             }
         }
 
-        int tmp = array[i];
-        array[i] = array[j];
-        array[j] = tmp;
+        int tmp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = tmp;
 
         j_turn = !j_turn;
     }
@@ -65,16 +65,16 @@ void quicksort() {
         top--;
 
         while (r > l) {
-            PartitionBounds boundaries = partition(arr, l, r);
+            PartitionBounds bounds = partition(l, r);
 
-            if (boundaries.l.b - boundaries.l.a > boundaries.r.b - boundaries.r.a) {
-                stack[++top] = boundaries.l;
-                l = boundaries.r.a;
-                r = boundaries.r.b;
+            if (bounds.l.b - bounds.l.a > bounds.r.b - bounds.r.a) {
+                stack[++top] = bounds.l;
+                l = bounds.r.a;
+                r = bounds.r.b;
             } else {
-                stack[++top] = boundaries.r;
-                l = boundaries.l.a;
-                r = boundaries.l.b;
+                stack[++top] = bounds.r;
+                l = bounds.l.a;
+                r = bounds.l.b;
             }
         }
     }
