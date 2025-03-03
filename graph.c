@@ -4,25 +4,85 @@
 #include <stdlib.h>
 #include <time.h>
 
-void print_table(int *table, int table_size);
-int hash_function(int value, int table_size);
-void init_hash_table(int *table, int table_size);
-bool insert(int *table, int data, int table_size);
-bool search(int *table, int data, int table_size);
-
-typedef struct mygraph {
+typedef struct {
     int num_nodes;
     int *vertices;
     int **edges;
-} graph;
+} Graph;
 
-graph *create_graph(int num_nodes);
-void destroy_graph(graph *g);
-void print_graph(graph *g);
-bool add_edge(graph *g, int from_node, int to_node, int weight);
-bool has_edge(graph *g, int from_node, int to_node);
-void add_edges(int, graph *);
-void init_graph(graph *g, int nb_edges);
+int hash_function(int value, int table_size) {
+    return (value) % table_size;
+}
+
+bool has_edge(Graph *g, int from_node, int to_node) {
+    assert(g != NULL);
+    assert(from_node < g->num_nodes);
+    assert(to_node < g->num_nodes);
+
+    return g->edges[from_node][to_node] != 0 || g->edges[to_node][from_node] != 0;
+}
+
+bool add_edge(Graph *g, int from_node, int to_node, int weight) {
+    assert(g != NULL);
+    assert(from_node < g->num_nodes);
+    assert(to_node < g->num_nodes);
+
+    if (has_edge(g, from_node, to_node) || from_node == to_node)
+        return false;
+
+    g->edges[from_node][to_node] = weight;
+    g->edges[to_node][from_node] = weight;
+
+    return true;
+}
+
+void add_edges(int number_of_edges, Graph *graph) {
+    srand(time(NULL));
+    for (int i = 0; i < number_of_edges; i++) {
+        int from, to, weight;
+        from = rand() % graph->num_nodes;
+        to = rand() % graph->num_nodes;
+        weight = rand() % 100;
+        add_edge(graph, from, to, weight);
+    }
+}
+
+bool search(int *table, int data, int table_size) {
+    int index = hash_function(data, table_size);
+    bool run = true;
+    if (table[index] == -1)
+        return false;
+
+    else {
+        while (run) {
+            if (table[index] == data)
+                return true;
+            else {
+                index = (index + 1) % table_size;
+                if (table[index] == -1)
+                    return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+void free_graph(Graph *g) {
+    if (g->edges == NULL || g->vertices == NULL) {
+        free(g);
+        return;
+    }
+
+    for (int i = 0; i < g->num_nodes; i++) {
+        if (g->edges[i] != NULL)
+            free(g->edges[i]);
+    }
+
+    free(g->vertices);
+    free(g->edges);
+    free(g);
+}
 
 bool insert(int *table, int data, int table_size) {
     bool exist = search(table, data, table_size);
@@ -50,9 +110,6 @@ void print_table(int *table, int table_size) {
             printf("index>> %d\t|%5d|\n", i, table[i]);
     }
 }
-int hash_function(int value, int table_size) {
-    return (value) % table_size;
-}
 
 void init_hash_table(int *table, int table_size) {
     for (int i = 0; i < table_size; i++)
@@ -70,83 +127,36 @@ void init_hash_table(int *table, int table_size) {
     }
 }
 
-bool search(int *table, int data, int table_size) {
-    int index = hash_function(data, table_size);
-    bool run = true;
-    if (table[index] == -1)
-        return false;
-
-    else {
-        while (run) {
-            if (table[index] == data)
-                return true;
-            else {
-                index = (index + 1) % table_size;
-                if (table[index] == -1)
-                    return false;
-            }
-        }
-    }
-
-    return true;
-}
-
-graph *create_graph(int num_nodes) {
-
+Graph *make_graph(int edges, int vertices) {
     srand(time(NULL));
-    graph *g = malloc(sizeof(*g));
+    Graph *g = malloc(sizeof(*g));
     if (g == NULL)
         return NULL;
 
-    // allocate our matrix
-    g->num_nodes = num_nodes;
-
-    // allocating "num_nodes" pointer to bool
-    g->edges = calloc(sizeof(int *), num_nodes);
-    // allocating "num_nodes" int ( 4bits ) records
-    g->vertices = calloc(sizeof(int), num_nodes);
+    g->num_nodes = vertices;
+    g->edges = calloc(sizeof(int *), vertices);
+    g->vertices = calloc(sizeof(int), vertices);
 
     if (g->edges == NULL || g->vertices == NULL) {
         free(g);
         return NULL;
     }
 
-    // allocating "num_nodes" arrays of bools such that each array contains "num_nodes" boolean
-    for (int row = 0; row < num_nodes; row++) {
-        // allocating "num_nodes" bool (which is just 1 bit) records
-        g->edges[row] = calloc(sizeof(int), num_nodes);
+    for (int row = 0; row < vertices; row++) {
+        g->edges[row] = calloc(sizeof(int), vertices);
         if (g->edges[row] == NULL) {
-            // cleanup again
-            destroy_graph(g);
+            free_graph(g);
             return NULL;
         }
     }
 
+    init_hash_table(g->vertices, g->num_nodes);
+    add_edges(edges, g);
+
     return g;
 }
 
-void init_graph(graph *g, int nb_edges) {
-    init_hash_table(g->vertices, g->num_nodes);
-    add_edges(nb_edges, g);
-}
-
-void destroy_graph(graph *g) {
-    if (g->edges == NULL || g->vertices == NULL) {
-        free(g);
-        return;
-    }
-
-    for (int i = 0; i < g->num_nodes; i++) {
-        if (g->edges[i] != NULL)
-            free(g->edges[i]);
-    }
-
-    free(g->vertices);
-    free(g->edges);
-    free(g);
-}
-
-void print_graph(graph *g) {
+void dump_graph(Graph *g) {
     printf("graph {\n");
     printf("\tordering = out;\n");
     for (int from = 0; from < g->num_nodes; from++) {
@@ -164,45 +174,7 @@ void print_graph(graph *g) {
     printf("}\n");
 }
 
-bool add_edge(graph *g, int from_node, int to_node, int weight) {
-    assert(g != NULL);
-    assert(from_node < g->num_nodes);
-    assert(to_node < g->num_nodes);
-
-    if (has_edge(g, from_node, to_node) || from_node == to_node)
-        return false;
-
-    g->edges[from_node][to_node] = weight;
-    g->edges[to_node][from_node] = weight;
-
-    return true;
-}
-
-bool has_edge(graph *g, int from_node, int to_node) {
-    assert(g != NULL);
-    assert(from_node < g->num_nodes);
-    assert(to_node < g->num_nodes);
-
-    return g->edges[from_node][to_node] != 0 || g->edges[to_node][from_node] != 0;
-}
-
-void add_edges(int number_of_edges, graph *graph) {
-    srand(time(NULL));
-    for (int i = 0; i < number_of_edges; i++) {
-        int from, to, weight;
-        // printf("from, to, weight: ");
-        // scanf("%d %d %d", &from, &to, &weight);
-        from = rand() % graph->num_nodes;
-        to = rand() % graph->num_nodes;
-        weight = rand() % 100;
-        // printf("\n");
-        // scanf("%d %d", &from, &to);
-
-        add_edge(graph, from, to, weight);
-    }
-}
-
-void print_mtx(graph *g, FILE *f) {
+void print_mtx(Graph *g, FILE *f) {
     for (int i = 0; i < g->num_nodes; i++) {
         for (int j = 0; j < g->num_nodes; j++) {
             fprintf(f, "|%2d ", g->edges[i][j]);
@@ -212,20 +184,10 @@ void print_mtx(graph *g, FILE *f) {
 }
 
 int main(void) {
-    int edges_nb, vertices_nb;
-    printf("number of vertices: ");
-    scanf("%d", &vertices_nb);
+    int edges = 10, vertices = 5;
 
-    printf("\nnumber of edges: ");
-    scanf("%d", &edges_nb);
-
-    graph *g1 = create_graph(vertices_nb);
-
-    init_graph(g1, edges_nb);
-
-    print_graph(g1);
-
-    destroy_graph(g1);
-
+    Graph *graph = make_graph(edges, vertices);
+    dump_graph(graph);
+    free_graph(graph);
     return 0;
 }
