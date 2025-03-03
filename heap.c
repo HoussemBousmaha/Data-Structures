@@ -11,11 +11,11 @@ void dump_heap(int index) {
         int info = heap[index];
 
         if (2 * index + 1 < N) {
-            printf("  \"V=%d I=%d\" -- \"V=%d I=%d\";\n", info, index, heap[2 * index + 1], 2 * index + 1);
+            printf("  \"V=%d I=%d\" -> \"V=%d I=%d\";\n", info, index, heap[2 * index + 1], 2 * index + 1);
         }
 
         if (2 * index + 2 < N) {
-            printf("  \"V=%d I=%d\" -- \"V=%d I=%d\";\n", info, index, heap[2 * index + 2], 2 * index + 2);
+            printf("  \"V=%d I=%d\" -> \"V=%d I=%d\";\n", info, index, heap[2 * index + 2], 2 * index + 2);
         }
 
         dump_heap(2 * index + 1);
@@ -52,7 +52,7 @@ int main(void) {
         heapify(i);
     }
 
-    printf("graph arbre {\n");
+    printf("digraph G {\n");
     dump_heap(0);
     printf("}\n");
 
